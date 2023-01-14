@@ -8,11 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using AuthenticationApi.Context;
 using AuthenticationApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using AuthenticationApi.Filters;
 
 namespace AuthenticationApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Route("[controller]")]
+    [Logado]
     public class VeiculosController : ControllerBase
     {
         private readonly DBContext _context;
@@ -24,7 +25,7 @@ namespace AuthenticationApi.Controllers
 
         // GET: api/Veiculos
         [HttpGet]
-        [Authorize(Roles = "adm,editor")]
+        [Permissao(Nivel = "adm,editor")]
         public async Task<ActionResult<IEnumerable<Veiculo>>> GetVeiculos()
         {
           if (_context.Veiculos == null)
@@ -36,7 +37,7 @@ namespace AuthenticationApi.Controllers
 
         // GET: api/Veiculos/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "adm,editor")]
+        [Permissao(Nivel = "adm,editor")]
         public async Task<ActionResult<Veiculo>> GetVeiculo(int id)
         {
           if (_context.Veiculos == null)
@@ -56,7 +57,7 @@ namespace AuthenticationApi.Controllers
         // PUT: api/Veiculos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Roles = "adm")]
+        [Permissao(Nivel = "adm")]
         public async Task<IActionResult> PutVeiculo(int id, Veiculo veiculo)
         {
             if (id != veiculo.Id)
@@ -88,7 +89,7 @@ namespace AuthenticationApi.Controllers
         // POST: api/Veiculos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Roles = "adm,editor")]
+        [Permissao(Nivel = "adm,editor")]
         public async Task<ActionResult<Veiculo>> PostVeiculo(Veiculo veiculo)
         {
           if (_context.Veiculos == null)
@@ -103,7 +104,7 @@ namespace AuthenticationApi.Controllers
 
         // DELETE: api/Veiculos/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "adm")]
+        [Permissao(Nivel = "adm")]
         public async Task<IActionResult> DeleteVeiculo(int id)
         {
             if (_context.Veiculos == null)

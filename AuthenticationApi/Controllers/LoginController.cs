@@ -2,8 +2,6 @@
 using AuthenticationApi.Dtos;
 using AuthenticationApi.Services;
 using AuthenticationApi.Services.Autenticacao;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +18,6 @@ namespace AuthenticationApi.Controllers
         }
 
         [HttpPost("/login")]
-        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] AdministradorDto administradorDto)
         {
             if (string.IsNullOrEmpty(administradorDto.Email) || string.IsNullOrEmpty(administradorDto.Senha)) 
@@ -31,7 +28,9 @@ namespace AuthenticationApi.Controllers
                 });
 
             }
-            var administrador = await _context.Administradores.Where(a => a.Email == administradorDto.Email && a.Senha == administradorDto.Senha).FirstOrDefaultAsync();
+            string email = administradorDto.Email;
+            string senha = administradorDto.Senha;
+            var administrador = await _context.Administradores.Where(a => a.Email == email && a.Senha == senha).FirstOrDefaultAsync();
             if (administrador == null)
             {
                 return StatusCode(404, new

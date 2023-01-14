@@ -7,7 +7,7 @@
         public string Email { get; set; } = default!;
         public string Senha { get; set; } = default!;
 
-        public EnumPermissao Permissao { get; set; }
+        public string Permissao { get; set; }
 
     }
 }

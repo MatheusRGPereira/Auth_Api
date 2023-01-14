@@ -1,5 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using AuthenticationApi.Dtos;
+using Jose;
 using System.Security.Claims;
 using System.Text;
 
@@ -7,22 +7,21 @@ namespace AuthenticationApi.Services.Autenticacao
 {
     public class TokenJWT
     {
-        public readonly static string Key = "SEGREDO_do_CoDigoDO-Futuro";
-        public static string Builder(AdministradorLogado administradorLogado)
+        public static string Builder(AdministradorLogado AdministradorLogado)
         {
-            var key = Encoding.ASCII.GetBytes(Key);
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenDescriptor = new SecurityTokenDescriptor()
+            var key = "SEGREDO_do_CoDigoDO-Futuro";
+
+            var payload = new AdministradorJwtDto
             {
-                Subject = new ClaimsIdentity(new Claim[]{
-                new Claim(ClaimTypes.Name, administradorLogado.Nome),
-                new Claim(ClaimTypes.Role, administradorLogado.Permissao),
-            }),
-                Expires = DateTime.UtcNow.AddHours(2),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Id = AdministradorLogado.Id,
+                Email = AdministradorLogado.Email,
+                Permissao = AdministradorLogado.Permissao,
+                Expiracao = DateTime.Now.AddDays(2)
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+
+            string token = Jose.JWT.Encode(payload, key, JwsAlgorithm.none);
+
+            return token;
         }
     }
 }

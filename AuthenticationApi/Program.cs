@@ -2,11 +2,9 @@ using System.Text;
 using System.Text.Json.Serialization;
 using AuthenticationApi.Context;
 using AuthenticationApi.Services.Autenticacao;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,36 +55,36 @@ builder.Services.AddSwaggerGen(c =>
 var conexao = builder.Configuration.GetConnectionString("conexao");
 builder.Services.AddDbContext<DBContext>(options => options.UseMySql(conexao, ServerVersion.AutoDetect(conexao)));
 
-builder.Services.AddMvc(config =>
-{
-    var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-    config.Filters.Add(new AuthorizeFilter(policy));
-});
+//builder.Services.AddMvc(config =>
+//{
+//    var policy = new AuthorizationPolicyBuilder()
+//                    .RequireAuthenticatedUser()
+//                    .Build();
+//    config.Filters.Add(new AuthorizeFilter(policy));
+//});
 
-builder.Services.AddAuthentication(x =>
-{
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(x =>
-{
-    x.RequireHttpsMetadata = false;
-    x.SaveToken = true;
-    x.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(TokenJWT.Key)),
-        ValidateIssuer = false,
-        ValidateAudience = false
-    };
-});
+//builder.Services.AddAuthentication(x =>
+//{
+//    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(x =>
+//{
+//    x.RequireHttpsMetadata = false;
+//    x.SaveToken = true;
+//    x.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuerSigningKey = true,
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(TokenJWT.Key)),
+//        ValidateIssuer = false,
+//        ValidateAudience = false
+//    };
+//});
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("adm", policy => policy.RequireClaim("adm"));
-    options.AddPolicy("editor", policy => policy.RequireClaim("editor"));
-});
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("adm", policy => policy.RequireClaim("adm"));
+//    options.AddPolicy("editor", policy => policy.RequireClaim("editor"));
+//});
 
 var app = builder.Build();
 
